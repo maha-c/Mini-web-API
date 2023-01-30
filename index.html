@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>document</title>
+    <style>
+   table, td, th {  
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+}
+    </style>
+</head>
+<body>
+
+    <input type="text" id="cityname" placeholder="Type City" oninput="setCityName(event)">
+    <button onclick="getweather()">Get Weather</button>
+    <p id="output"></p> 
+
+    <table>
+        <tr bgcolor="grey">
+            <th>Longtitude</th>
+            <th>Lattitude</th>
+            <th>Description</th>
+            <th>feels_like</th>
+            <th>temp_min</th>
+            <th>temp_max</th>
+            <th>pressure</th>
+            <th>humidity</th>
+            <th>name</th>
+            <th>timezone</th>
+            <th>country</th>
+          </tr>
+
+          <tr>
+            <td><span id="longtitude"></span></td>
+            <td><span id="Latitude"></span></td>
+            <td><span id="Description"></span></td>
+            <td><span id="feels_like"></span></td>
+            <td><span id="temp_min"></span></td>
+            <td><span id="temp_max"></span></td>
+            <td><span id="pressure"></span></td>
+            <td><span id="humidity"></span></td>
+            <td><span id="name"></span></td>
+            <td><span id="timezone"></span></td>
+            <td><span id="country"></span></td>
+          </tr>
+        </table>
+    
+    
+</body>
+<script>
+
+    let city_name = "";
+   
+    const outputfield = document.getElementById("output")
+
+    const longtitude = document.getElementById("longtitude")
+    const Lattitude = document.getElementById("Latitude")
+
+    const Description = document.getElementById("Description")
+    const feels_like = document.getElementById("feels_like")
+    const temp_min = document.getElementById("temp_min")
+    const temp_max = document.getElementById("temp_max")
+    const pressure = document.getElementById("pressure")
+    const humidity = document.getElementById("humidity")
+    const name = document.getElementById("name")
+    const timezone = document.getElementById("timezone")
+
+    const country = document.getElementById("country")
+
+
+    function setCityName(event = new Event()) {
+         city_name = event.target.value
+    }
+    
+
+   async function getweather(){
+    const api_key="69ed49948edcfa3031af9d41347c112b"
+    const api_url = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}`
+    //console.log(city_name + " #### " + api_url)
+         
+        const httpResponse = await fetch(api_url);
+        console.log(httpResponse);  
+
+        //error handling
+        if(httpResponse.status === 404){
+            alert(`No City with name ${city_name} found`);
+            return;
+        }
+
+        const jsonbody = await httpResponse.json();
+        //outputfield.innerHTML 
+        const coord = jsonbody.coord;
+          //console.log(coord)
+        longtitude.innerHTML = coord.lon;
+        Lattitude.innerHTML = coord.lat;
+        const weather = jsonbody.weather[0];
+        Description.innerHTML = weather.description
+        const main = jsonbody.main;
+        console.log(main.feels_like)
+        feels_like.innerHTML = main.feels_like          
+        temp_min.innerHTML = main.temp_min
+        temp_max.innerHTML =  main.temp_max
+        pressure.innerHTML =  main.pressure
+        humidity.innerHTML =  main.humidity
+        name.innerHTML = jsonbody.name
+        timezone.innerHTML = jsonbody.timezone     
+        
+        const sys = jsonbody.sys;
+        country.innerHTML = sys.country
+        
+        outputfield.innerHTML = `Retreived API url is <u><href=${api_url}> ${api_url}</u> `
+
+    }
+
+        </script>
+        </html>
+    
